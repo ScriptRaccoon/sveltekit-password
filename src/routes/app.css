@@ -1,0 +1,28 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--primary-color: rgb(24, 60, 96);
+}
+
+body {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 1.2rem;
+	line-height: 1.6;
+	color: #222;
+}
+
+a {
+	color: inherit;
+}
+
+h1 {
+	margin-block: 1rem;
+}
+
+p {
+	margin-block: 1rem;
+}
