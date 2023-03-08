@@ -1,9 +1,20 @@
 <script lang="ts">
+	import { browser } from "$app/environment";
+	import { goto } from "$app/navigation";
 	import type { ActionData } from "./$types";
 	export let form: ActionData;
+
+	if (form?.is_correct && browser) {
+		setTimeout(() => {
+			goto("/personal");
+		}, 2000);
+	}
 </script>
 
 <h1>Login</h1>
+
+<p>This page is password-protected.</p>
+
 <form method="POST">
 	<label>
 		Password
@@ -13,7 +24,9 @@
 </form>
 
 {#if form}
-	<p>{form.message}</p>
+	<p class="message" class:success={form.is_correct}>
+		{form.message}
+	</p>
 {/if}
 
 <style>
@@ -22,6 +35,7 @@
 		padding: 0.5rem;
 		border: 0.1rem solid gray;
 	}
+
 	input:focus {
 		border-color: var(--primary-color);
 	}
@@ -30,6 +44,7 @@
 		display: block;
 		margin-bottom: 1rem;
 	}
+
 	button {
 		background-color: var(--primary-color);
 		color: white;
@@ -39,5 +54,13 @@
 		font-size: inherit;
 		cursor: pointer;
 		outline-offset: 0.2rem;
+	}
+
+	.message {
+		color: red;
+	}
+
+	.message.success {
+		color: darkgreen;
 	}
 </style>

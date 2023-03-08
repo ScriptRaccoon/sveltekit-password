@@ -8,13 +8,20 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const password = data.get("password");
 		const is_correct = password == SECRET_PASSWORD;
+
 		if (is_correct) {
 			const session_id = save_session();
 			cookies.set("session_id", session_id, { path: "/" });
-			return { message: "The password is correct" };
+
+			return {
+				is_correct,
+				message:
+					"The password is correct! You will be redirected now.",
+			};
 		} else {
 			return fail(401, {
-				message: "The password is not correct",
+				is_correct,
+				message: "The password is not correct.",
 			});
 		}
 	},
