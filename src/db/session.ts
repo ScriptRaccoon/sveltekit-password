@@ -5,3 +5,7 @@ export function save_session(): string {
 	sessions.add(session_id);
 	return session_id;
 }
+
+export function has_session(session_id: string): boolean {
+	return sessions.has(session_id);
+}

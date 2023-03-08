@@ -10,7 +10,7 @@ export const actions: Actions = {
 		const is_correct = password == SECRET_PASSWORD;
 		if (is_correct) {
 			const session_id = save_session();
-			cookies.set("session_id", session_id);
+			cookies.set("session_id", session_id, { path: "/" });
 			return { message: "The password is correct" };
 		} else {
 			return fail(401, {
