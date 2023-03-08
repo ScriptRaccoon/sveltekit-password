@@ -1,11 +1,20 @@
+<script lang="ts">
+	import type { ActionData } from "./$types";
+	export let form: ActionData;
+</script>
+
 <h1>Login</h1>
-<form action="/login" method="POST">
+<form method="POST">
 	<label>
 		Password
-		<input type="password" />
+		<input name="password" type="password" />
 	</label>
 	<button>Login</button>
 </form>
+
+{#if form}
+	<p>{form.message}</p>
+{/if}
 
 <style>
 	input {
