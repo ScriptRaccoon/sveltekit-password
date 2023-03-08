@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Website</title>
+	<title>Website with password-protected subpage</title>
 </svelte:head>
 
 <Nav />

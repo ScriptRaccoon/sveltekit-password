@@ -34,6 +34,8 @@
 		width: 100%;
 		padding: 0.5rem;
 		border: 0.1rem solid gray;
+		font-size: inherit;
+		font-family: inherit;
 	}
 
 	input:focus {
