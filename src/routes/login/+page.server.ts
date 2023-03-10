@@ -17,10 +17,10 @@ export const actions: Actions = {
 
 		if (is_correct) {
 			const session_id = save_session();
-			const one_day = 60 * 60 * 24;
+			const one_week = 60 * 60 * 24 * 7;
 			cookies.set("session_id", session_id, {
 				path: "/",
-				maxAge: one_day,
+				maxAge: one_week,
 			});
 
 			return { is_correct, message: MESSAGES.CORRECT };
