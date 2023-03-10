@@ -1,6 +1,6 @@
 import type { Actions } from "./$types";
 import { SECRET_PASSWORD } from "$env/static/private";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { save_session } from "../../db/session";
 
 const MESSAGES = {
@@ -13,9 +13,9 @@ export const actions: Actions = {
 		const data = await request.formData();
 
 		const password = data.get("password");
-		const is_correct = password === SECRET_PASSWORD;
+		const password_correct = password === SECRET_PASSWORD;
 
-		if (is_correct) {
+		if (password_correct) {
 			const session_id = save_session();
 			const one_week = 60 * 60 * 24 * 7;
 			cookies.set("session_id", session_id, {
@@ -23,8 +23,9 @@ export const actions: Actions = {
 				maxAge: one_week,
 			});
 
-			return { is_correct, message: MESSAGES.CORRECT };
+			// return { password_correct };
+			throw redirect(307, "/personal");
 		}
-		return fail(401, { is_correct, message: MESSAGES.INCORRECT });
+		return fail(401, { password_correct });
 	},
 };
