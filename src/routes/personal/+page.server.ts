@@ -1,7 +1,6 @@
-import { has_session } from "../../db/session";
-import type { PageServerLoad } from "./$types";
+import type { PageServerLoad, Actions } from "./$types";
 import { redirect } from "@sveltejs/kit";
-import type { Actions } from "./$types";
+import { has_session } from "../../db/session";
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const session_id = cookies.get("session_id");
