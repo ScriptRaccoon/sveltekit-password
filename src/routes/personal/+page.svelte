@@ -1,9 +1,6 @@
 <h1>Personal stuff</h1>
 
-<p class="info">
-	This page can only be accessed with a password. The cookie for the
-	login lasts for one week.
-</p>
+<p class="info">This page should be protected with a password.</p>
 
 <p>
 	Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga ad
