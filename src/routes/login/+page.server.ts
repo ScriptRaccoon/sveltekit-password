@@ -3,11 +3,6 @@ import { SECRET_PASSWORD } from "$env/static/private";
 import { fail, redirect } from "@sveltejs/kit";
 import { save_session } from "../../db/session";
 
-const MESSAGES = {
-	CORRECT: "The password is correct! You will be redirected now.",
-	INCORRECT: "The password is not correct",
-};
-
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const data = await request.formData();
