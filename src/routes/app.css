@@ -5,7 +5,7 @@
 }
 
 :root {
-	--primary-color: rgb(24, 60, 96);
+	--primary-color: rgb(39, 84, 41);
 }
 
 body {
@@ -53,4 +53,8 @@ button {
 	font-size: inherit;
 	cursor: pointer;
 	outline-offset: 0.1rem;
+}
+
+h1 {
+	color: var(--primary-color);
 }

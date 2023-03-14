@@ -22,11 +22,8 @@
 </p>
 
 <style>
-	h1 {
-		color: red;
-	}
 	.info {
 		font-weight: bold;
-		color: var(--primary-color);
+		color: orangered;
 	}
 </style>
