@@ -152,3 +152,21 @@ export const actions: Actions = {
 ```
 
 And that's it!
+
+## Progressive Enhancement
+We can improve the UX of the login process by replacing the server-side navigation with a client-side navigation. This can be done simply by adding the action directive `use:enhance` to our login form:
+
+```svelte
+<script lang="ts">
+  import { enhance } from "$app/forms";
+  // ...
+</script>
+
+<h1>Login</h1>
+
+<form method="POST" use:enhance>
+  // ..
+</form>
+```
+
+Now, when JS is enabled, the redirection will look much smoother.
