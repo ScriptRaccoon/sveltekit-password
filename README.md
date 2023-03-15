@@ -8,6 +8,8 @@ The password is: sveltekit2023
 
 # How it's done
 
+## Setup
+
 First of all, we start with three simple pages: `/`, `/blog` and `/personal`.
 
 ```
@@ -24,9 +26,13 @@ First of all, we start with three simple pages: `/`, `/blog` and `/personal`.
 
 We would like to protect `/personal` with a password.
 
-So let's create a password and save it in our `.env` file:
+Let's first create a password and save it in our `.env` file:
 
-`SECRET_PASSWORD = sveltekit123`
+```
+SECRET_PASSWORD = sveltekit123
+```
+
+## Login page
 
 Now let's create a login page `/login/+page.svelte` with a login form:
 
@@ -39,21 +45,24 @@ Now let's create a login page `/login/+page.svelte` with a login form:
 </form>
 ```
 
-To handle the POST request, we create `/login/+page.server.ts` and add an Action handler:
+To handle the POST request, we create `/login/+page.server.ts` and add an Action handler which validates the password:
 
 ```typescript
 import type { Actions } from "./$types";
 import { SECRET_PASSWORD } from "$env/static/private";
 import { fail, redirect } from "@sveltejs/kit";
 import { save_session } from "../../db/session";
+
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
     const data = await request.formData();
     const password = data.get("password");
     const password_correct = password === SECRET_PASSWORD;
+
     if (password_correct) {
       ...
     }
+    
     return fail(401, { password_correct });
   },
 };
@@ -73,6 +82,8 @@ If the password is not correct, we send the info back to the login page. This in
   <p>The password is not correct.</p>
 {/if}
 ```
+
+## Cookies
 
 However, if the password is correct, our action handler sets a cookie and then redirects to the personal page:
 
@@ -109,7 +120,9 @@ export function has_session(session_id: string): boolean {
 }
 ```
 
-Now we need to add a load function to the personal page to check if the user has already logged in -- using the cookie.
+## Password protection
+
+Now we need to add a load function to the personal page to check if the user has already logged in - using the cookie. If not, we redirect to the login page.
 
 ```typescript
 import type { PageServerLoad } from "./$types";
@@ -117,10 +130,10 @@ import { redirect } from "@sveltejs/kit";
 import { has_session } from "../../db/session";
 
 export const load: PageServerLoad = async ({ cookies }) => {
-	const session_id = cookies.get("session_id");
-	if (!session_id) throw redirect(307, "/login");
-	const logged_in = has_session(session_id);
-	if (!logged_in) throw redirect(307, "/login");
+  const session_id = cookies.get("session_id");
+  if (!session_id) throw redirect(307, "/login");
+  const logged_in = has_session(session_id);
+  if (!logged_in) throw redirect(307, "/login");
 };
 ```
 
@@ -131,10 +144,10 @@ However, you will notice that you get an error when the login page redirects you
 ```typescript
 import type { PageServerLoad, Actions } from "./$types";
 
-// ...
+// ... load function ...
 
 export const actions: Actions = {
-	default: async () => {},
+  default: async () => {},
 };
 ```
 
