@@ -16,10 +16,10 @@ First of all, we start with three simple pages: `/`, `/blog` and `/personal`.
 /routes
 
   +page.svelte
-  
+
   /blog
     +page.svelte
-  
+
   /personal
     +page.svelte
 ```
@@ -40,8 +40,8 @@ Now let's create a login page `/login/+page.svelte` with a login form:
 <h1>Login</h1>
 
 <form method="POST">
-  <label>Password<input name="password" type="password" /></label>
-  <button>Login</button>
+	<label>Password<input name="password" type="password" /></label>
+	<button>Login</button>
 </form>
 ```
 
@@ -62,7 +62,7 @@ export const actions: Actions = {
     if (password_correct) {
       ...
     }
-    
+
     return fail(401, { password_correct });
   },
 };
@@ -71,7 +71,7 @@ export const actions: Actions = {
 If the password is not correct, we send the info back to the login page. This info is contained in the `form` object:
 
 ```svelte
-<script lang="ts">	
+<script lang="ts">
   import type { ActionData } from "./$types";
   export let form: ActionData;
 </script>
@@ -89,14 +89,14 @@ However, if the password is correct, our action handler sets a cookie and then r
 
 ```typescript
 if (password_correct) {
-  const session_id = save_session();
-  const one_week = 60 * 60 * 24 * 7;
-  cookies.set("session_id", session_id, {
-    path: "/",
-    maxAge: one_week,
-  });
+	const session_id = save_session();
+	const one_week = 60 * 60 * 24 * 7;
+	cookies.set("session_id", session_id, {
+		path: "/",
+		maxAge: one_week,
+	});
 
-  throw redirect(307, "/personal");
+	throw redirect(307, "/personal");
 }
 ```
 
@@ -106,9 +106,9 @@ The cookie lasts for one week and is httpOnly by default. To generate it, we hav
 const sessions = new Set(); // should be in a database
 
 export function save_session(): string {
-  const session_id = crypto.randomUUID();
-  sessions.add(session_id);
-  return session_id;
+	const session_id = crypto.randomUUID();
+	sessions.add(session_id);
+	return session_id;
 }
 ```
 
@@ -116,7 +116,7 @@ The utility `has_session` simply checks if the session is in the database.
 
 ```typescript
 export function has_session(session_id: string): boolean {
-  return sessions.has(session_id);
+	return sessions.has(session_id);
 }
 ```
 
@@ -130,14 +130,14 @@ import { redirect } from "@sveltejs/kit";
 import { has_session } from "../../db/session";
 
 export const load: PageServerLoad = async ({ cookies }) => {
-  const session_id = cookies.get("session_id");
-  if (!session_id) throw redirect(307, "/login");
-  const logged_in = has_session(session_id);
-  if (!logged_in) throw redirect(307, "/login");
+	const session_id = cookies.get("session_id");
+	if (!session_id) throw redirect(307, "/login");
+	const logged_in = has_session(session_id);
+	if (!logged_in) throw redirect(307, "/login");
 };
 ```
 
-This essentially is the password protection already. 
+This essentially is the password protection already.
 
 However, you will notice that you get an error when the login page redirects you to the personal page. This is because the latter has no form action implemented, and we redirect from a form action. So let's add an empty one:
 
@@ -147,13 +147,14 @@ import type { PageServerLoad, Actions } from "./$types";
 // ... load function ...
 
 export const actions: Actions = {
-  default: async () => {},
+	default: async () => {},
 };
 ```
 
 And that's it!
 
 ## Progressive Enhancement
+
 We can improve the UX of the login process by replacing the server-side navigation with a client-side navigation. This can be done simply by adding the action directive `use:enhance` to our login form:
 
 ```svelte
@@ -170,3 +171,44 @@ We can improve the UX of the login process by replacing the server-side navigati
 ```
 
 Now, when JS is enabled, the redirection will look much smoother.
+
+## Protect more pages
+
+So far, we have only protected one single subpage. If you want to protect multiple subpages, you can either use hooks (see the [documentation](https://kit.svelte.dev/docs/hooks) or the video [Protect SvelteKit Routes with Hooks](https://www.youtube.com/watch?v=K1Tya6ovVOI) by Huntabyte) or use the following method:
+
+Let's create a subpage inside of our personal subpage: `/personal/notes/+page.svelte`. Its content it not relevant for now, but add some heading to identify it. With our current solution, you can access it even when you are not logged in. Of course we could just copy-paste our code from `+page.server.ts`, but this is not a good way. Instead, we move the logic to a layout load function:
+
+Create an empty layout at `/personal/+layout.svelte`.
+
+```svelte
+<slot />
+```
+
+This is a _nested layout_ and it is basically added to our root layout. It does not replace it.
+
+Create its corresponding server file `personal/+layout.server.ts` and move the cookie logic there, thereby also replacing the type `PageServerLoad` by `LayoutServerLoad`.
+
+```typescript
+import type { LayoutServerLoad } from "./$types";
+import { redirect } from "@sveltejs/kit";
+import { has_session } from "../../db/session";
+
+export const load: LayoutServerLoad = async ({ cookies }) => {
+	const session_id = cookies.get("session_id");
+	if (!session_id) throw redirect(307, "/login");
+	const logged_in = has_session(session_id);
+	if (!logged_in) throw redirect(307, "/login");
+};
+```
+
+So our `personal/+page.server.ts` only keeps the empty action:
+
+```typescript
+import type { Actions } from "./$types";
+
+export const actions: Actions = {
+	default: async () => {},
+};
+```
+
+What we have done protects all pages inside of the `/personal` folder (since they load the nested layout), and this applies in particular to our `/personal/notes` page.
