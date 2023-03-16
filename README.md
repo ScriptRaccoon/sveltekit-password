@@ -176,7 +176,7 @@ Now, when JS is enabled, the redirection will look much smoother.
 
 So far, we have only protected one single subpage. If you want to protect multiple subpages, you can either use hooks (see the [documentation](https://kit.svelte.dev/docs/hooks) or the video [Protect SvelteKit Routes with Hooks](https://www.youtube.com/watch?v=K1Tya6ovVOI) by Huntabyte) or use the following method:
 
-Let's create a subpage inside of our personal subpage: `/personal/notes/+page.svelte`. Its content it not relevant for now, but add some heading to identify it. With our current solution, you can access it even when you are not logged in. Of course we could just copy-paste our code from `+page.server.ts`, but this is not a good way. Instead, we move the logic to a layout load function:
+Let's create a subpage inside of our personal subpage: `/personal/notes/+page.svelte`. Its content is not relevant for now, but you might want to add a heading to identify it. With our current solution, you can access it even when you are not logged in. Of course we could just copy-paste our code from `+page.server.ts`, but this is not a good way. Instead, we move the login logic to a layout load function as follows.
 
 Create an empty layout at `/personal/+layout.svelte`.
 
@@ -184,9 +184,9 @@ Create an empty layout at `/personal/+layout.svelte`.
 <slot />
 ```
 
-This is a _nested layout_ and it is basically added to our root layout. It does not replace it.
+This is a _nested layout_ which is added to our root layout. It does not replace it.
 
-Create its corresponding server file `personal/+layout.server.ts` and move the cookie logic there, thereby also replacing the type `PageServerLoad` by `LayoutServerLoad`.
+Create its corresponding server file `personal/+layout.server.ts` and move the login logic there, thereby also replacing the type `PageServerLoad` by `LayoutServerLoad`.
 
 ```typescript
 import type { LayoutServerLoad } from "./$types";
@@ -201,7 +201,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 };
 ```
 
-So our `personal/+page.server.ts` only keeps the empty action:
+Thus, our `personal/+page.server.ts` only keeps the empty action:
 
 ```typescript
 import type { Actions } from "./$types";
