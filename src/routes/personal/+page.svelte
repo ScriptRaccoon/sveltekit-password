@@ -6,6 +6,10 @@
 </p>
 
 <p>
+	<a href="/personal/notes">Personal Notes</a>
+</p>
+
+<p>
 	Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga ad
 	perferendis reprehenderit dolor quaerat aperiam amet vero nulla
 	inventore possimus?
