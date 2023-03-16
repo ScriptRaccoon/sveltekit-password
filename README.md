@@ -2,7 +2,7 @@
 
 https://sveltekit-password.netlify.app/
 
-This website demonstrates how to implement a password-protected page inside of a SvelteKit application.
+This repository demonstrates how to implement a password-protected page inside of a SvelteKit application. Below you also find a step-by-step tutorial. We will also see how to protect multiple pages.
 
 The password is: sveltekit2023
 
@@ -213,7 +213,7 @@ export const actions: Actions = {
 
 What we have done protects all nested pages inside of the `/personal` folder (since they load the nested layout), and this applies in particular to our `/personal/notes` page.
 
-There is a security issue, however, as explained by Hunterbyte in the video [Are your routes actually protected?](https://www.youtube.com/watch?v=UbhhJWV3bmI). Navigate to `/personal`, delete the cookie (imagine that the cookie is expired), and try to go to `/personal/notes`. You have access even though you should not be logged in anymore. In other words, even though our solution protects the pages from users who are not logged in, it does not proctect the pages from users who have just been logged out (in the same session).
+There is a security issue, however, as explained by Hunterbyte in the video [Are your routes actually protected?](https://www.youtube.com/watch?v=UbhhJWV3bmI). Navigate to `/personal`, delete the cookie (imagine that the cookie is expired), and try to go to `/personal/notes`. You have access even though you should not be logged in anymore. In other words, even though our solution protects the pages from users who are not logged in at all, it does not proctect the pages from users who have just been logged out (in the same session).
 
 The reason is that the server load of `/personal/notes` (which is empty right now, we did not create it) does not load the server load inside of `personal/+layout.server.ts`. You can check this by console logs. Fortunately, there is a way to solve this: we create `/personal/notes/+page.server.ts` and add the following:
 
@@ -225,6 +225,6 @@ export const load: PageServerLoad = async ({ parent }) => {
 };
 ```
 
-We also add this code to `/personal/+page.server.ts`. The parent refers to the surrounding layout server load. This way we are forcing it to rerun and hence check again if the user is still logged in.
+We also add this code to `/personal/+page.server.ts`. The `parent` function refers to the surrounding layout server load. This way we force it to run again and hence check if the user is still logged in.
 
-As you see this grew a bit out of hand. You might not need to do this when you just want to protect a single page, and maybe you also do not really care about logging out users who already have the password. But for bigger endeavors (such as an admin page) it becomes apparent that a layout (or page) server load function is not ideal. Hooks are a better solution. Again, check out the video [Protect SvelteKit Routes with Hooks](https://www.youtube.com/watch?v=K1Tya6ovVOI) by Huntabyte. Maybe I will create a "follow-up" repository to this one.
+As you see this grew a bit out of hand. You might not need to do this when you just want to protect a single page, and maybe you also do not really care about logging out users properly who already have the password. But for bigger endeavors (such as an admin page) it becomes apparent that a layout (or page) server load function is not ideal. Hooks are a better solution. Again, check out the video [Protect SvelteKit Routes with Hooks](https://www.youtube.com/watch?v=K1Tya6ovVOI) by Huntabyte. Maybe I will create a "follow-up" repository to this one which uses hooks instead.
