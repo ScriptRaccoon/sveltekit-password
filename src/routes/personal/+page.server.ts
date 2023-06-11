@@ -1,8 +1,4 @@
-import type { Actions, PageServerLoad } from "./$types";
-
-export const actions: Actions = {
-	default: async () => {},
-};
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ parent }) => {
 	await parent();

@@ -96,7 +96,7 @@ if (password_correct) {
 		maxAge: one_week,
 	});
 
-	throw redirect(307, "/personal");
+	throw redirect(303, "/personal");
 }
 ```
 
@@ -134,20 +134,6 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	if (!session_id) throw redirect(307, "/login");
 	const logged_in = has_session(session_id);
 	if (!logged_in) throw redirect(307, "/login");
-};
-```
-
-This essentially is the password protection already.
-
-However, you will notice that you get an error when the login page redirects you to the personal page. This is because the latter has no form action implemented, and we redirect from a form action. So let's add an empty one:
-
-```typescript
-import type { PageServerLoad, Actions } from "./$types";
-
-// ... load function ...
-
-export const actions: Actions = {
-	default: async () => {},
 };
 ```
 
